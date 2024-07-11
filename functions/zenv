@@ -1,0 +1,33 @@
+#!/usr/bin/env zsh
+
+if [[ $# -eq 0 ]]; then
+    echo "Usage: $0 <target>" >&2
+    return 1
+fi
+
+local shortcut=$1
+local target
+if [[ $shortcut != '.' && -r $ZENV_CACHE_DIR/shortcuts/$shortcut ]]; then
+    target=$(head -n 1 $ZENV_CACHE_DIR/shortcuts/$shortcut)
+else
+    target=${1:A}
+fi
+
+if [[ -z $target ]]; then
+    echo "Usage: $0 <target>" >&2
+    return 1
+fi
+
+if [[ ! -d $target ]]; then
+    echo "Not a directory: $target" >&2
+    return 1
+fi
+
+if [[ ! -r $target/.zenv ]]; then
+    echo "Not a zenv directory: $target" >&2
+    return 1
+fi
+
+env ZENV=$target ZENV_DEPTH=$((ZENV_DEPTH + 1)) ZDOTDIR=${ZDOTDIR:-$HOME} zsh -i
+
+print -P "%F{6}<<< Exited a state of Zenv: $target <<<%f" >&2

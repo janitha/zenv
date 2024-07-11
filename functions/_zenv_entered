@@ -1,0 +1,51 @@
+#!/usr/bin/env zsh
+
+function _zenv_prompt_info() {
+    [[ -z $ZENV ]] && return
+    print -Rn "${ZENV_NAME}"
+}
+
+function _zenv_zen_prompt_info() {
+    if [[ $PWD != $ZENV* ]]; then
+        print -Rn "${zfg[lightred]}"
+    else
+        print -Rn "${zfg[yellow]}"
+    fi
+
+    print -Rn "("
+    for ((i = 0; i < $ZENV_DEPTH; i++)); do
+        print -Rn "ž"
+    done
+    print -Rn ")"
+}
+
+function _zenv_zen_prompt_dirsub() {
+    local newpwd=$1
+    local from=$ZENV
+    local to="($ZENV_NAME)"
+    newpwd=${newpwd/$from/$to}
+
+    print -Rn $newpwd
+}
+
+function _zenv_cache_shortcut() {
+    if [[ ! -d $ZENV_CACHE_DIR/shortcuts ]]; then
+        mkdir -p $ZENV_CACHE_DIR/shortcuts
+    fi
+
+    echo $ZENV >$ZENV_CACHE_DIR/shortcuts/$ZENV_NAME
+}
+
+print -P "%F{6}>>> Entered a state of Zenv: $ZENV >>>%f" >&2
+
+cd $ZENV
+source ${ZENV_FILE}
+
+ZENV_NAME=${ZENV_NAME:-${PWD:t}}
+
+_zenv_cache_shortcut
+
+if [[ -n $ZEN_PROMPT ]]; then
+    zen-prompt add-dirsub _zenv_zen_prompt_dirsub
+    zen-prompt add-part _zenv_zen_prompt_info
+fi
