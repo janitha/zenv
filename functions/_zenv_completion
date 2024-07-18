@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+local -a files
+files=($(ls "$ZENV_CACHE_DIR/shortcuts"))
+
+_arguments '1: :(${files[@]})'
