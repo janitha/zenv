@@ -14,9 +14,9 @@ fpath+=("${0:h}/functions")
 
 autoload -Uz zenv
 autoload -Uz _zenv_entered
+autoload -Uz _zenv_completion
+compdef _zenv_completion zenv
 
 if [[ -n $ZENV ]]; then
     _zenv_entered
 fi
-
-# TODO: Add a function to list shortcuts using `compctl`
