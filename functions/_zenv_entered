@@ -22,7 +22,7 @@ function _zenv_zen_prompt_info() {
 function _zenv_zen_prompt_dirsub() {
     local newpwd=$1
     local from=$ZENV
-    local to="($ZENV_NAME)"
+    local to="${zfg[green]}($ZENV_NAME)${zfg[lightblue]}"
     newpwd=${newpwd/$from/$to}
 
     print -Rn $newpwd
